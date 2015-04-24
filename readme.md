@@ -1,8 +1,8 @@
-# [Ouroboros](en.wikipedia.org/wiki/Ouroboros)
+﻿# Ouroboros
 
 This repository contains some thoughts about representing dependent type theory in dependent type theory.
 
-# Weakening
+## Weakening
 
 Weakening is defined as a type-preserving renaming.
 
