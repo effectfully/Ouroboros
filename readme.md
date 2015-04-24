@@ -6,7 +6,7 @@ This repository contains some thoughts about representing dependent type theory 
 
 Weakening is defined as a type-preserving renaming.
 
-This function drops `i' elements from a context, starting from the right.
+This function drops `i` elements from a context, starting from the right.
 
 ```
 rdrop : ∀ {n} -> (i : Fin n) -> Con n -> Con (n ∸ toℕ i)
@@ -14,7 +14,7 @@ rdrop  zero     Γ      = Γ
 rdrop (suc n)  (Γ , σ) = rdrop n Γ
 ```
 
-This function inserts a type into a context at the `i' position, starting from the right.
+This function inserts a type into a context at the `i position, starting from the right.
 It also weakens all traversed types to make them indexed by the new context.
 
 ```
@@ -41,7 +41,7 @@ weaken i (↓ σ)   = ↓ (Weaken i σ)
 weaken i (var v) = var (weaken-var i v)
 ```
 
-This function weakens a variable. If the weakening index is `zero`, then the variable points to the untouched part of the context, and hence we need to increment it, because the context now contains an additional type, that must be skipped. If the weakening index is `suc i` for some `i` and the variable points to the head of the context, then we don't need to weaken it, since the context is changed somewhere forward. 
+This function weakens a variable. If the weakening index is `zero`, then the variable points to the untouched part of the context, and hence we need to increment it, because the context now contains an additional type, that must be skipped. If the weakening index is `suc i` for some `i` and the variable points to the head of the context, then we don't need to weaken it, since the context is changed somewhere forward. In the remaining case we just call `weaken-var` recursively.
 
 ``` 
 weaken-var : ∀ {n} i {Γ : Con n} {σ τ} -> Γ ∋ τ -> rinsert i Γ σ ∋ Weaken i τ
