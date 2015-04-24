@@ -14,7 +14,7 @@ rdrop  zero     Γ      = Γ
 rdrop (suc n)  (Γ , σ) = rdrop n Γ
 ```
 
-This function inserts a type into a context at the `i position, starting from the right.
+This function inserts a type into a context at the `i` position, starting from the right.
 It also weakens all traversed types to make them indexed by the new context.
 
 ```
