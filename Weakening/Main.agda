@@ -125,7 +125,7 @@ mutual
                      ->   weaken-var (inject₁ (rearrange i)) (weaken-var (i +F j)      {σ = τ} v)
                         ≅ weaken-var (suc (i +F j))           (weaken-var (rearrange i) {σ = υ} v)
   weaken-var-commute {j = j}  zero            v     {τ} {υ} =
-    sym (subst-removable (_∋_ (rinsert j _ _ , Weaken j _)) Pop-Weaken (vs (weaken-var j v)))
+    sym (subst-removable (_∋_ _) Pop-Weaken (vs (weaken-var j v)))
   weaken-var-commute {j = j} (suc i) {Γ , σ}  vz    {τ} {υ} =
     cong-subst-addable-both (_∋_ _) (_∋_ _)
       (weaken-var (suc (inject₁ (rearrange i))) {σ = turn-rdrop-rearrange-rinsert i υ})
