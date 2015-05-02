@@ -16,19 +16,19 @@ mutual
     ε : Con 0
     _,_ : ∀ {n} (Γ : Con n) -> Type Γ -> Con (suc n)
 
-  data Type : ∀ {n} -> Con n -> Set where
-    type : ∀ {n} {Γ : Con n} -> Type Γ
-    _Π_  : ∀ {n} {Γ : Con n} -> (σ : Type Γ) -> Type (Γ , σ) -> Type Γ
-    ↑    : ∀ {n} {Γ : Con n} -> Γ ⊢ type     -> Type Γ
+  data Type {n} (Γ : Con n) : Set where
+    type : Type Γ
+    _Π_  : (σ : Type Γ) -> Type (Γ , σ) -> Type Γ
+    ↑    : Γ ⊢ type     -> Type Γ
 
   data _∋_ : ∀ {n} (Γ : Con n) -> Type Γ -> Set where
     vz  : ∀ {n} {Γ : Con n} {σ}   -> Γ , σ ∋ Pop σ
     vs_ : ∀ {n} {Γ : Con n} {σ τ} -> Γ     ∋ σ     -> Γ , τ ∋ Pop σ
 
-  data _⊢_ : ∀ {n} (Γ : Con n) -> Type Γ -> Set where
-    ƛ_   : ∀ {n} {Γ : Con n} {σ τ} -> Γ , σ ⊢ τ -> Γ ⊢ σ Π τ
-    ↓    : ∀ {n} {Γ : Con n}       -> Type Γ    -> Γ ⊢ type
-    var  : ∀ {n} {Γ : Con n} {σ}   -> Γ ∋ σ    -> Γ ⊢ σ
+  data _⊢_ {n} (Γ : Con n) : Type Γ -> Set where
+    ƛ_   : ∀ {σ τ} -> Γ , σ ⊢ τ -> Γ ⊢ σ Π τ
+    ↓    :             Type Γ   -> Γ ⊢ type
+    var  : ∀ {σ}   -> Γ ∋ σ    -> Γ ⊢ σ
 
   rdrop : ∀ {n} -> (i : Fin n) -> Con n -> Con (n ∸ toℕ i)
   rdrop  zero     Γ      = Γ
