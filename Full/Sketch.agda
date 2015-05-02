@@ -13,9 +13,9 @@ infixr 2 _Π_
 infix  1 _∋_ _⊢_
 
 data Con : ℕ -> Set
-data Type : ∀ {n} -> Con n -> Set
+data Type {n} (Γ : Con n) : Set
 data _∋_ : ∀ {n} (Γ : Con n) -> Type Γ -> Set
-data _⊢_ : ∀ {n} (Γ : Con n) -> Type Γ -> Set
+data _⊢_ {n} (Γ : Con n) : Type Γ -> Set
 
 data Con where
   ε : Con 0
@@ -25,10 +25,10 @@ rdrop : ∀ {n} -> (i : Fin n) -> Con n -> Con (n ∸ toℕ i)
 rdrop  zero     Γ      = Γ
 rdrop (suc n)  (Γ , σ) = rdrop n Γ
 
-data Type where
-  type : ∀ {n} {Γ : Con n} -> Type Γ
-  _Π_  : ∀ {n} {Γ : Con n} -> (σ : Type Γ) -> Type (Γ , σ) -> Type Γ
-  ↑    : ∀ {n} {Γ : Con n} -> Γ ⊢ type     -> Type Γ
+data Type {n} Γ where
+  type : Type Γ
+  _Π_  : (σ : Type Γ) -> Type (Γ , σ) -> Type Γ
+  ↑    : Γ ⊢ type     -> Type Γ
 
 rlookup : ∀ {n} i (Γ : Con (suc n)) -> Type (rdrop (suc i) Γ)
 rlookup  zero   (Γ , σ) = σ
@@ -89,11 +89,11 @@ weaken-var (suc i)  {Γ , σ}  vz    = H.subst (_∋_ _) Pop-Weaken
 weaken-var (suc i)  {Γ , σ} (vs v) = H.subst (_∋_ _) Pop-Weaken
                                       (vs (weaken-var i v))
 
-data _⊢_ where
-  ƛ_   : ∀ {n} {Γ : Con n} {σ τ} -> Γ , σ ⊢ τ -> Γ ⊢ σ Π τ
-  _·_  : ∀ {n} {Γ : Con n} {σ τ} -> Γ ⊢ σ Π τ -> (x : Γ ⊢ σ) -> Γ ⊢ τ [ x ]
-  ↓    : ∀ {n} {Γ : Con n}       -> Type Γ    -> Γ ⊢ type
-  var  : ∀ {n} {Γ : Con n} {σ}   -> Γ ∋ σ    -> Γ ⊢ σ
+data _⊢_ {n} Γ where
+  ƛ_   : ∀ {σ τ} -> Γ , σ ⊢ τ -> Γ ⊢ σ Π τ
+  _·_  : ∀ {σ τ} -> Γ ⊢ σ Π τ -> (x : Γ ⊢ σ) -> Γ ⊢ τ [ x ]
+  ↓    :             Type Γ   -> Γ ⊢ type
+  var  : ∀ {σ}   -> Γ ∋ σ    -> Γ ⊢ σ
 
 weaken i (ƛ b)   = ƛ (weaken (suc i) b)
 weaken i (f · x) = H.subst (_⊢_ _) Weaken-[]
