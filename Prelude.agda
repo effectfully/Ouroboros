@@ -4,6 +4,12 @@ open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Data.Nat
 
+cong₃ : ∀ {α β γ δ} {A : Set α} {B : A -> Set β} {C : ∀ {x} -> B x -> Set γ}
+          {D : ∀ {x} {y : B x} -> C y -> Set δ} {x y v w s t}
+      -> (f : ∀ x -> (y : B x) -> (z : C y) -> D z)
+      -> x ≅ y -> v ≅ w -> s ≅ t -> f x v s ≅ f y w t
+cong₃ f refl refl refl = refl
+
 irefl : ∀ {ι α} {I : Set ι} {i j}
       -> (A : I -> Set α) -> (x : ∀ {i} -> A i) -> i ≅ j -> x {i} ≅ x {j}
 irefl A x refl = refl
@@ -54,6 +60,21 @@ icong²₂ : ∀ {ι₁ ι₂ α β γ} {I₁ : Set ι₁} {I₂ : I₁ -> Set �
         -> (f : ∀ {i₁ i₂} -> (x : A i₁ i₂) -> (y : B x) -> C y)
         -> i₁ ≅ j₁ -> i₂ ≅ j₂ -> x ≅ y -> v ≅ w -> f x v ≅ f y w
 icong²₂ A f refl refl refl refl = refl
+
+unsubst : ∀ {ι α β} {I : Set ι} {i j : I}
+        -> (A : I -> Set α) {B : ∀ {k} -> A k -> Set β} {x : A i}
+        -> (f : ∀ {k} -> (x : A k) -> B x)
+        -> (i≅j : i ≅ j) {y : B (subst A i≅j x)}
+        -> f (subst A i≅j x) ≅ y
+        -> f x ≅ y
+unsubst A f refl r = r
+
+cong-subst-removable : ∀ {ι α β} {I : Set ι} {i j : I}
+                     -> (A : I -> Set α) {B : ∀ {k} -> A k -> Set β} {x : A i}
+                     -> (f : ∀ {k} -> (x : A k) -> B x)
+                     -> (i≅j : i ≅ j)
+                     -> f x ≅ f (subst A i≅j x)
+cong-subst-removable A f refl = refl
 
 subst-addable-both : ∀ {ι κ α} {I : Set ι} {K : Set κ} {i j : I} {k l : K}
                    -> (A : I -> Set α)

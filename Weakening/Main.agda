@@ -6,9 +6,9 @@ open import Data.Nat
 
 open import Ouroboros.Prelude
 
-infixl 2 _,_
-infixr 2 _Π_
-infix  1 _∋_ _⊢_
+infixl 4 _,_
+infixr 5 _Π_
+infix  3 _∋_ _⊢_
 
 {-# TERMINATING #-}
 mutual
@@ -106,7 +106,7 @@ mutual
 
   Weaken-commute : ∀ {n m j} (i : Fin n) {Γ : Con (toℕ i + m)} (σ : Type Γ) {τ υ}
                  ->   Weaken (inject₁ (rearrange i)) (Weaken (i +F j)      {σ = υ} σ)
-                    ≅ Weaken (suc (i +F j))           (Weaken (rearrange i) {σ = τ} σ)
+                    ≅ Weaken (suc (i +F j))          (Weaken (rearrange i) {σ = τ} σ)
   Weaken-commute i  type   = irefl Type type (contexts-eq i)
   Weaken-commute i (σ Π τ) = icong₂ Type _Π_ (contexts-eq i) (Weaken-commute i σ) (Weaken-commute (suc i) τ)
   Weaken-commute i (↑ t)   = icong (λ Γ -> Γ ⊢ _) ↑ (contexts-eq i) (weaken-commute i t)
@@ -114,7 +114,7 @@ mutual
   weaken-commute : ∀ {n m j} (i : Fin n) {Γ : Con (toℕ i + m)} {σ} (t : Γ ⊢ σ) {τ υ}
                  ->   weaken (inject₁ (rearrange i)) {σ = turn-rdrop-rearrange-rinsert i τ}
                         (weaken (i +F j)      {σ = υ} t)
-                    ≅ weaken (suc (i +F j))           {σ = turn-rdrop-rinsert           i υ}
+                    ≅ weaken (suc (i +F j))          {σ = turn-rdrop-rinsert           i υ}
                         (weaken (rearrange i) {σ = τ} t)
   weaken-commute i (ƛ b)   = icong³ (λ Γ σ τ -> Γ , σ ⊢ τ) ƛ_
     (contexts-eq i) (Weaken-commute i _) (Weaken-commute (suc i) _) (weaken-commute (suc i) b)
@@ -123,20 +123,20 @@ mutual
 
   weaken-var-commute : ∀ {n m j} (i : Fin n) {Γ : Con (toℕ i + m)} {σ} (v : Γ ∋ σ) {τ υ}
                      ->   weaken-var (inject₁ (rearrange i)) (weaken-var (i +F j)      {σ = τ} v)
-                        ≅ weaken-var (suc (i +F j))           (weaken-var (rearrange i) {σ = υ} v)
+                        ≅ weaken-var (suc (i +F j))          (weaken-var (rearrange i) {σ = υ} v)
   weaken-var-commute {j = j}  zero            v     {τ} {υ} =
     sym (subst-removable (_∋_ _) Pop-Weaken (vs (weaken-var j v)))
   weaken-var-commute {j = j} (suc i) {Γ , σ}  vz    {τ} {υ} =
     cong-subst-addable-both (_∋_ _) (_∋_ _)
       (weaken-var (suc (inject₁ (rearrange i))) {σ = turn-rdrop-rearrange-rinsert i υ})
-      (weaken-var (suc (suc (i +F j)))           {σ = turn-rdrop-rinsert          i τ})
+      (weaken-var (suc (suc (i +F j)))          {σ = turn-rdrop-rinsert          i τ})
        Pop-Weaken Pop-Weaken _ _
       (subst-addable-both (_∋_ _) (_∋_ _) Pop-Weaken Pop-Weaken _ _
          (irefl² (λ Γ σ -> Γ , σ ∋ Pop σ) vz (contexts-eq i) (Weaken-commute i _)))
   weaken-var-commute {j = j} (suc i) {Γ , σ} (vs v) {τ} {υ} =
     cong-subst-addable-both (_∋_ _) (_∋_ _)
       (weaken-var (suc (inject₁ (rearrange i))) {σ = turn-rdrop-rearrange-rinsert i υ})
-      (weaken-var (suc (suc (i +F j)))           {σ = turn-rdrop-rinsert           i τ})
+      (weaken-var (suc (suc (i +F j)))          {σ = turn-rdrop-rinsert           i τ})
        Pop-Weaken Pop-Weaken _ _
       (subst-addable-both (_∋_ _) (_∋_ _) Pop-Weaken Pop-Weaken _ _
          (icong²₂ _∋_ (λ v τ -> vs_ {τ = τ} v)
