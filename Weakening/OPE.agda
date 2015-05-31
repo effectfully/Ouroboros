@@ -172,7 +172,7 @@ weaken ψ (↓ σ)   = ↓ (Weaken ψ σ)
 
 weaken-id (var v) =
   cong₂ (λ σ (v : _ ∋ σ) -> var v) (Weaken-id _) (weaken-var-id v)
-weaken-id {σ = σ Π τ} (ƛ b)   =
+weaken-id (ƛ b)   =
   cong₃ (λ σ τ (b : _ ▻ σ ⊢ τ) -> ƛ b)
         (Weaken-id _)
         (unsubst pat (flip Weaken _) (Weaken-id _) (Weaken-id _))
