@@ -70,12 +70,12 @@ postulate
   Pop-[] : ∀ {n} {Γ : Con n} {σ : Type Γ} {τ} {s}
          -> σ ≅ Pop {σ = τ} σ [ s ]
   Pop-Subst : ∀ {n} {i : Fin n} {Γ : Con (suc n)} {σ : Type Γ} {τ}
-              {s : rdrop (suc i) Γ ⊢ rlookup i Γ}
+                {s : rdrop (suc i) Γ ⊢ rlookup i Γ}
             -> Pop {σ = Subst i τ s} (Subst i σ s) ≅ Subst (suc i) (Pop {σ = τ} σ) s
   Weaken-[] : ∀ {n} {i : Fin n} {Γ : Con n} {σ : Type Γ} {τ υ} {x : Γ ⊢ σ}
             -> Weaken (suc i) {σ = υ} τ [ weaken i x ] ≅ Weaken i {σ = υ} (τ [ x ])
   Subst-[] : ∀ {n} {i : Fin n} {Γ : Con (suc n)} {σ : Type Γ} {τ}
-             {x : Γ ⊢ σ} {s : rdrop (suc i) Γ ⊢ rlookup i Γ}
+               {x : Γ ⊢ σ} {s : rdrop (suc i) Γ ⊢ rlookup i Γ}
            -> Subst (suc i) τ s [ subst i x s ] ≅ Subst i (τ [ x ]) s
 
 data _∋_ where
